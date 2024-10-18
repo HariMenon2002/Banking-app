@@ -11,3 +11,5 @@ Explore tailwind.config.css and see how the author has put his favourite colors 
 The constants folder has all the routes. global.css also has the necessary utility classes
 
 Make changes in layout.tsx, create a (root) folder with layout.tsx and page.tsx in it
+
+You will create diff components like header box and total balance box and also work on page.tsx in root. You will also need to install query-string to use formatAmount and also install chart.js followed by npm install react-chartjs-2
