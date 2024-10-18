@@ -5,3 +5,9 @@ npx shadcn@latest add button
 
 Download assets folder from a zip file. Put the contents of the file here
 Put global.css in app
+
+Explore tailwind.config.css and see how the author has put his favourite colors there. public folder has all the icons that we need, types has all the necessary types
+
+The constants folder has all the routes. global.css also has the necessary utility classes
+
+Make changes in layout.tsx, create a (root) folder with layout.tsx and page.tsx in it
