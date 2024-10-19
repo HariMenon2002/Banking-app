@@ -1,6 +1,8 @@
 //copy the root layout first
 
+import MobileNav from "@/components/MobileNav";
 import Sidebar from "@/components/Sidebar";
+import Image from "next/image";
 
 /*the thing is that some pages need a sidebar , that is why we created a seperate folder with pages for sidebar */
 
@@ -15,7 +17,16 @@ export default function RootLayout({
   return (
     <main className="flex h-screen w-full font-inter">
         <Sidebar user={loggedIn}/>
-        {children}
+
+        <div className="flex size-full flex-col">
+            <div className="root-layout">
+                <Image src="/icons/logo.svg" width={30} height={30} alt="logo"></Image>
+                <div>
+                  <MobileNav user={loggedIn}/>
+                </div>
+            </div>
+            {children}
+        </div>
     </main>
   );
 }
