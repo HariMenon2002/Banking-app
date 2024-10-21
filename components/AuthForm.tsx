@@ -23,13 +23,15 @@ import { Input } from "@/components/ui/input"  //do npx shadcn-ui@latest add inp
 import CustomInputForm from './CustomInputForm';
 import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { signIn, signUp } from '@/lib/actions/user.actions';
 
 // const authFormSchema = z.object({
 //     email: z.string().email(),
 // });
 
 const AuthForm = ({type}:{type:string}) => {
-  //const router=useRouter
+  const router=useRouter();
   const [user,setUser]=useState(null);
   const [isLoading,setIsLoading]=useState(false);
 
@@ -50,18 +52,18 @@ const AuthForm = ({type}:{type:string}) => {
     try{
         //sign up with Appwrite and create a plaid token
         if(type=='sign-up'){
-            // const newUser=await signUp(data);
-            // setUser(newUser);
+            const newUser=await signUp(data);
+            setUser(newUser);
         }
         if(type=='sign-in'){
-            // const response=await signIn({
-            //     email:data.email,
-            //     password:data.password,
-            // })
+            const response=await signIn({
+                email:data.email,
+                password:data.password,
+            })
 
-            // if(response){
-
-            // }
+            if(response){
+                   router.push('/')     //going to home pagee
+            }
         }
     }catch(error){
         console.log(error);
