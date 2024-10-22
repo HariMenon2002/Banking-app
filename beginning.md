@@ -17,3 +17,8 @@ You will create diff components like header box and total balance box and also w
 For forms we shall install forms from shad cn (check shadcn react hook form)
 
 For accepting data in form, we need server actions, so in lib folder, create a folder called actions and create a new file called user.actions.ts
+
+Now we will create a project in appwrite and copy that id to an env variable. .env.example is also created so that other people know the env variables that we have created. Create api key in appwrite and select all scopes before that. Then copy the api key.
+Go to database section in appwrite and create new database(here i called it bank). Copy the database id and store in the env variable. Create a collection(here i have named it users) and copy that id. Create another collection and name it transactions and also another collection called banks. Go to users collection and create  attributes.
+
+Then create appwrite.ts file in lib folder as mentioned in docs( refer ssr rendering in appwrite using nextjs docs)

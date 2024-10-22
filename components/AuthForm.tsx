@@ -34,6 +34,7 @@ const AuthForm = ({type}:{type:string}) => {
   const router=useRouter();
   const [user,setUser]=useState(null);
   const [isLoading,setIsLoading]=useState(false);
+ 
 
   const formSchema=authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,7 +51,7 @@ const AuthForm = ({type}:{type:string}) => {
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
     try{
-        //sign up with Appwrite and create a plaid token
+        // //sign up with Appwrite and create a plaid token
         if(type=='sign-up'){
             const newUser=await signUp(data);
             setUser(newUser);
@@ -136,7 +137,7 @@ const AuthForm = ({type}:{type:string}) => {
                                     Loading...
                     
                                 </>
-                            ):type=='sign-in'?'Signin':'Signout'}
+                            ):type=='sign-in'?'Signin':'Signup'}
                         </Button>
                     </div>
                 </form>
