@@ -24,3 +24,11 @@ Go to database section in appwrite and create new database(here i called it bank
 Then create appwrite.ts file in lib folder as mentioned in docs( refer ssr rendering in appwrite using nextjs docs)
 
 Go to plaid, setup an account and copy the keys. Do npm install plaid and npm install react-plaid-link . Create plaid.ts in lib folder
+
+For dwolla, first install dwolla-v2, then we have to pass sender funding source url, receiver funding source url and the amount. Dwolla is basically for transactions.
+
+Add attributes to bank collection in appwrite. 
+
+Now we have to completely modify our signup as it just cant be a mere session, it should also add to database.Plus signup should now be atomic ie either everything works or nothing
+
+We will also have to create a dwolla sandbox account, copy key and secret from applications section. When you signup a pop box comes asking all the details. In plaid in developers section and in that in the sandbox section username and password is given for sandbox which we have to enter when requested and also make sure that dwolla is enabled by going into integrations section in plaid. Click checking and saving box when asked by plaid

@@ -3,12 +3,16 @@
 import { ID,Query } from "node-appwrite";
 import { createAdminClient, createSessionClient } from "../appwrite";
 import { cookies } from "next/headers";
-import { encryptId, parseStringify } from "../utils";
+import { encryptId, extractCustomerIdFromUrl, parseStringify } from "../utils";
 import { CountryCode, ProcessorTokenCreateRequest, ProcessorTokenCreateRequestProcessorEnum, Products } from "plaid";
 import { plaidClient } from "../plaid";
 import { revalidatePath } from "next/cache";
+import { addFundingSource, createDwollaCustomer } from "./dwolla.actions";
 
-
+//for us to make accessing env variables easier we do
+const {APPWRITE_DATABASE_ID: DATABASE_ID,   //this is basically renaming
+    APPWRITE_USER_COLLECTION_ID: USER_COLLECTION_ID,
+    APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID,}=process.env;
 
 
 export const signIn=async({email,password}:signInProps)=>{
@@ -32,13 +36,36 @@ export const signIn=async({email,password}:signInProps)=>{
     }
 }
 
-export const signUp=async(userData:SignUpParams)=>{
+export const signUp=async({password,...userData}:SignUpParams)=>{  //basically i have extracted password out of userData as i dont want to send it with dwolla
+
+    let newUserAccount;
     try{
-        const { account } = await createAdminClient();
+        const { account,database } = await createAdminClient();
 
         //const newUserAccount=await account.create(ID.unique(), email, password, name);
-        const newUserAccount=await account.create(ID.unique(), userData.email, userData.password,`${userData.firstName} ${userData.lastName}`);
-        const session = await account.createEmailPasswordSession(userData.email, userData.password);
+        newUserAccount=await account.create(ID.unique(), userData.email, password,`${userData.firstName} ${userData.lastName}`);
+        if(!newUserAccount) throw new Error('Error creating user')
+        
+        const dwollaCustomerUrl=await createDwollaCustomer({
+            ...userData,
+            type:'personal'
+        });
+
+        if(!dwollaCustomerUrl) throw new Error('Error creating Dwolla customer')
+        const dwollaCustomerId=extractCustomerIdFromUrl(dwollaCustomerUrl);
+        const newUser=await database.createDocument(
+            DATABASE_ID!,
+            USER_COLLECTION_ID!,
+            ID.unique(),
+            {
+                ...userData,
+                userId:newUserAccount.$id,
+                dwollaCustomerId,
+                dwollaCustomerUrl
+            }
+        )
+
+        const session = await account.createEmailPasswordSession(userData.email, password);
 
         cookies().set("appwrite-session", session.secret, {
             path: "/",
@@ -47,7 +74,8 @@ export const signUp=async(userData:SignUpParams)=>{
             secure: true,
         });
 
-        return parseStringify(newUserAccount);
+        //return parseStringify(newUserAccount);    old one
+        return parseStringify(newUser);    //comes directly from database
     }catch(error){
         console.log("Error",error)
     }
@@ -84,7 +112,8 @@ export const createLinkToken=async(user:User)=>{
             user:{
                 client_user_id:user.$id
             },
-            client_name:user.name,
+            //client_name:user.name,
+            client_name:`${user.firstName} ${user.lastName}`, //database doesnt have name, it just has firstName and lastName
             products:['auth'] as Products[],
             language:'en',
             country_codes:['US'] as CountryCode[],
@@ -95,6 +124,25 @@ export const createLinkToken=async(user:User)=>{
         return parseStringify({linkToken:response.data.link_token});
     }catch(error){
         console.log(error);
+    }
+}
+
+export const createBankAccount=async({userId,bankId,accountId,accessToken,fundingSourceUrl,shareableId}:createBankAccountProps)=>{
+    try{
+        //we will create bankaccount as document in database(appwrite)
+        const {database}=await createAdminClient(); //appwrite client which allows us to create new documents
+        const bankAccount=await database.createDocument(
+            DATABASE_ID!,
+            BANK_COLLECTION_ID!,
+            ID.unique(),
+            {
+                userId,bankId,accountId,accessToken,fundingSourceUrl,shareableId
+            }
+        )
+
+        return parseStringify(bankAccount);
+    }catch(error){
+
     }
 }
 
@@ -125,7 +173,7 @@ export const exchangePublicToken=async({publicToken,user}:exchangePublicTokenPro
     
         // Create a funding source URL for the account using the Dwolla customer ID, processor token, and bank name
         //this is to connect payment processing functionality with the bank account
-        const fundingSourceUrl = await addFundingSource({
+        const fundingSourceUrl = await addFundingSource({  //from dwolla
             dwollaCustomerId: user.dwollaCustomerId,
             processorToken,
             bankName: accountData.name,
