@@ -22,3 +22,5 @@ Now we will create a project in appwrite and copy that id to an env variable. .e
 Go to database section in appwrite and create new database(here i called it bank). Copy the database id and store in the env variable. Create a collection(here i have named it users) and copy that id. Create another collection and name it transactions and also another collection called banks. Go to users collection and create  attributes.
 
 Then create appwrite.ts file in lib folder as mentioned in docs( refer ssr rendering in appwrite using nextjs docs)
+
+Go to plaid, setup an account and copy the keys. Do npm install plaid and npm install react-plaid-link . Create plaid.ts in lib folder
