@@ -35,4 +35,7 @@ We will also have to create a dwolla sandbox account, copy key and secret from a
 
 Till now we were using fake balance etc. now we will fetch it from databsase. bank.actions.ts file will help us in that.
 
-Another thing to note is that all user.name should be converted to user.firstName(according to database) or user.firstName user.lastName
+Another thing to note is that all user.name should be converted to user.firstName(according to database) or user.firstName user.lastName. Now we also have to fix our doughnut chart as that is also fixed data
+
+You can add tabs from shadcn which will be helpful for transactions
+For transaction table also we will take the help of shadcn
