@@ -32,3 +32,7 @@ Add attributes to bank collection in appwrite.
 Now we have to completely modify our signup as it just cant be a mere session, it should also add to database.Plus signup should now be atomic ie either everything works or nothing
 
 We will also have to create a dwolla sandbox account, copy key and secret from applications section. When you signup a pop box comes asking all the details. In plaid in developers section and in that in the sandbox section username and password is given for sandbox which we have to enter when requested and also make sure that dwolla is enabled by going into integrations section in plaid. Click checking and saving box when asked by plaid
+
+Till now we were using fake balance etc. now we will fetch it from databsase. bank.actions.ts file will help us in that.
+
+Another thing to note is that all user.name should be converted to user.firstName(according to database) or user.firstName user.lastName

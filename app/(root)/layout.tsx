@@ -19,7 +19,7 @@ export default async function RootLayout({
   const  loggedIn=await getLoggedInUser();
 
   if(!loggedIn) {console.log("wont work1");redirect('/sign-in');}
-  else console.log("works");
+  
   return (
     <main className="flex h-screen w-full font-inter">
         <Sidebar user={loggedIn}/>
