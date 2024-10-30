@@ -39,3 +39,5 @@ Another thing to note is that all user.name should be converted to user.firstNam
 
 You can add tabs from shadcn which will be helpful for transactions
 For transaction table also we will take the help of shadcn
+
+During deployment,check what link is it giving and accordingly change it in NEXT_PUBLIC_SITE_URL env variable. 
